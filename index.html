@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050a15">
+<title>GoldPEPP · zer0day</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{min-height:100vh;color:#eaf4ff;font:15px Arial,sans-serif;background:radial-gradient(ellipse at center,#103f72 0%,#08192e 40%,#040811 85%)}
+.page{min-height:100vh;display:flex;flex-direction:column;padding:24px 5vw}
+header{display:flex;justify-content:space-between;font-weight:800;letter-spacing:.18em;font-size:13px}
+header span,h1 span{color:#64baff}.tip{color:#8da8c2;font-size:10px;letter-spacing:.1em}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.orb{display:grid;place-items:center;width:138px;height:138px;margin-bottom:22px;border-radius:100%;border:1px solid #6bbdff;box-shadow:0 0 70px #0077ff66;color:#78c6ff;font-size:56px}
+h1{font-size:clamp(52px,10vw,98px);letter-spacing:-.055em;margin:8px 0}
+p{color:#a4b9d1;max-width:490px;line-height:1.75}
+button{padding:23px 63px;margin:22px 0 10px;background:linear-gradient(125deg,#147cfa,#063b9a);border:1px solid #85cbff;border-radius:13px;color:white;cursor:pointer;font-weight:800;letter-spacing:.14em;font-size:17px;box-shadow:0 0 42px #0080ff55}
+button:hover{transform:translateY(-3px)}#status{font-size:12px;min-height:36px;color:#e9c47c}
+footer{color:#849bb3;text-align:center;font-size:11px;padding:14px;line-height:1.7}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<div class="page">
+<header><div>OPEN<span>GOLDHEN</span></div><div class="tip">GOLDPEPP · PREVIEW</div></header>
+<main>
+<div class="orb" aria-hidden="true">✦</div>
+<div class="tip">BY ZER0DAY</div>
+<h1>Gold<span>HEN</span></h1>
+<p>Un'interfaccia essenziale, progettata per il browser della console.</p>
+<button id="start" type="button">PRIEMM CCA</button>
+<p id="status" role="status">Anteprima: nessuna modifica alla console viene eseguita.</p>
+</main>
+<footer>Interfaccia zer0day · GoldHEN originale: SiSTRo e collaboratori.<br>Prototipo non operativo; compatibilità del payload non verificata.</footer>
+</div>
+<script>
+document.getElementById('start').addEventListener('click',function(){
+document.getElementById('status').textContent='Questa è un’anteprima grafica: nessuna procedura è stata avviata.';
+});
+</script>
+</body></html>
