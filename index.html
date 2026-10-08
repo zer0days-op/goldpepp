@@ -29,13 +29,71 @@ footer{color:#849bb3;text-align:center;font-size:11px;padding:14px;line-height:1
 <h1>Gold<span>HEN</span></h1>
 <p>Un'interfaccia essenziale, progettata per il browser della console.</p>
 <button id="start" type="button">PRIEMM CCA</button>
-<p id="status" role="status">Anteprima: nessuna modifica alla console viene eseguita.</p>
+<p id="status" role="status">Firmware PS4 11.02 · Launcher in preparazione (non operativo).</p>
 </main>
 <footer>Interfaccia zer0day · GoldHEN originale: SiSTRo e collaboratori.<br>Prototipo non operativo; compatibilità del payload non verificata.</footer>
 </div>
 <script>
-document.getElementById('start').addEventListener('click',function(){
-document.getElementById('status').textContent='Questa è un’anteprima grafica: nessuna procedura è stata avviata.';
-});
+(function(){
+  'use strict';
+  var button=document.getElementById('start');
+  var status=document.getElementById('status');
+  var firmware='11.02';
+  var url='payload/OpenGoldHEN_zer0day_1102.bin';
+  var expectedLength=291808;
+  var busy=false;
+  function show(message){status.textContent=message;}
+  function getFirmware(){
+    var m=navigator.userAgent.match(/PlayStation\s+4[/ ](\d+)\.(\d{2})/i);
+    return m?m[1]+'.'+m[2]:null;
+  }
+  function wait(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
+  function loadPayload(){
+    return new Promise(function(resolve,reject){
+      var xhr=new XMLHttpRequest();
+      xhr.open('GET',url+'?v=1102',true);
+      xhr.responseType='arraybuffer';
+      xhr.timeout=20000;
+      xhr.onload=function(){
+        if(xhr.status!==200||!xhr.response||xhr.response.byteLength!==expectedLength){
+          reject(new Error('Payload assente o dimensione non valida; nessuna esecuzione.'));
+        }else{resolve(xhr.response);}
+      };
+      xhr.onerror=function(){reject(new Error('Impossibile caricare il payload dal sito.'));};
+      xhr.ontimeout=function(){reject(new Error('Timeout durante il caricamento del payload.'));};
+      xhr.send();
+    });
+  }
+  button.onclick=function(){
+    if(busy)return;
+    busy=true;button.disabled=true;
+    (async function(){
+      var detected=getFirmware();
+      if(detected!==firmware){
+        throw new Error(detected?'Firmware '+detected+' non compatibile con questo profilo 11.02.':'Apri questa pagina dal browser di una PS4 firmware 11.02.');
+      }
+      var bridge=window.GoldPEPPLoader;
+      if(!bridge||typeof bridge.prepare!=='function'||typeof bridge.launch!=='function'){
+        throw new Error('Motore ntfonto/GoldHEN non integrato: l’interfaccia non applica patch kernel.');
+      }
+      show('Verifica del payload…');
+      var payload=await loadPayload();
+      show('Preparazione in corso…');
+      var result=await bridge.prepare({firmware:firmware});
+      if(!result||result.success!==true||result.firmware!==firmware){
+        throw new Error('Preparazione non confermata; avvio annullato.');
+      }
+      for(var seconds=10;seconds>0;seconds--){
+        show('Preparazione completata. GoldHEN tra '+seconds+' secondi…');
+        await wait(1000);
+      }
+      show('Richiesta di avvio GoldHEN…');
+      await bridge.launch(payload,result);
+      show('Avvio richiesto al loader; verifica l’esito sulla console.');
+    })().catch(function(error){show('Operazione non eseguita: '+String(error.message||error));}).then(function(){
+      busy=false;button.disabled=false;
+    });
+  };
+})();
 </script>
 </body></html>
